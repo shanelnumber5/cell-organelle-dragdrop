@@ -1,0 +1,195 @@
+/* style.css (rewritten, same look, a bit cleaner + more consistent) */
+
+:root {
+  font-family: system-ui, Arial, sans-serif;
+  color: #111;
+}
+
+body {
+  margin: 0;
+  color: #111;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)),
+    url("images/cell-background.png") center / cover no-repeat fixed;
+}
+
+/* Layout */
+.wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.sub {
+  margin-top: 6px;
+  color: #444;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Organelles list */
+.list {
+  display: grid;
+  gap: 10px;
+}
+
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+
+  background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
+  border: 1px solid #bae6fd;
+  border-radius: 14px;
+
+  cursor: grab;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.chip:active {
+  cursor: grabbing;
+}
+
+.org-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 6px;
+}
+
+/* Targets */
+.targets {
+  display: grid;
+  gap: 12px;
+}
+
+.target {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px;
+  min-height: 64px;
+
+  background: #fff;
+  border: 2px dashed #cfcfcf;
+  border-radius: 16px;
+}
+
+.dropSlot {
+  min-width: 160px;
+  text-align: right;
+  font-weight: 600;
+  color: #333;
+}
+
+.target.good {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.target.bad {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: center;   /* centers buttons horizontally */
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  flex-wrap: wrap;           /* prevents overflow on smaller screens */
+}
+
+button {
+  border: 0;
+  padding: 14px 20px;          /* bigger click area */
+  border-radius: 14px;
+  cursor: pointer;
+
+  background: #111;
+  color: #fff;
+
+  font-size: 16px;             /* larger readable text */
+  font-weight: 600;
+
+  min-height: 48px;            /* accessibility tap size */
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* Hover + press feedback */
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Reset button color */
+button#resetBtn {
+  background: #444;
+}
+
+.score {
+  width: 100%;
+  text-align: center;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* Mo popup */
+.mo-popup {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+
+  max-width: 260px;
+  padding: 14px 18px;
+
+  background: #111;
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  font-size: 14px;
+  z-index: 999;
+
+  animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

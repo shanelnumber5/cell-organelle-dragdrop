@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cell Organelle Drag & Drop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <audio id="successSound" src="sounds/success.mp3" preload="auto"></audio>
+
+  <main class="wrap">
+    <h1>Cell Organelle Drag & Drop</h1>
+    <p class="sub">Drag an organelle to the matching function. Then check your answers.</p>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Organelles</h2>
+        <div id="organelles" class="list"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Functions</h2>
+        <div id="targets" class="targets"></div>
+      </div>
+    </section>
+
+    <section class="controls">
+      <button id="checkBtn" type="button">Check Answers</button>
+      <button id="resetBtn" type="button">Reset</button>
+      <div id="score" class="score" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div id="moPopup" class="mo-popup" hidden>
+    🦦 <strong>Mo says:</strong>
+    "Mitochondria is the powerhouse of the cell...
+    and YOU powered through this activity!"
+  </div>
+
+  <!-- Load confetti FIRST -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Then your script -->
+  <script src="script.js"></script>
+</body>
+</html>
