@@ -200,3 +200,60 @@ button#resetBtn {
   }
 }
 
+/* Phone layout fixes */
+@media (max-width: 720px) {
+  .wrap {
+    padding: 14px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr; /* stack panels */
+    gap: 12px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  /* Make organelle list more compact and tappable */
+  .list {
+    grid-template-columns: 1fr 1fr; /* two chips per row on phones */
+    gap: 10px;
+  }
+
+  .org-img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 4px;
+  }
+
+  .chip {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  /* Targets: allow wrapping so "Drop Here" doesn't get squished */
+  .target {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .dropSlot {
+    min-width: 0;           /* allow shrink */
+    width: 100%;            /* move to next line */
+    text-align: left;       /* reads better on phone */
+    margin-top: 6px;
+  }
+
+  /* Buttons already centered; keep them big and not too wide */
+  .controls button {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  h1 {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+}
+
