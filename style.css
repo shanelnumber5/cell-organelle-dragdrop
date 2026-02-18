@@ -46,12 +46,18 @@ body {
   gap: 10px;
 }
 
+.chip.selected {
+  outline: 3px solid rgba(17, 17, 17, 0.35);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
 .chip {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
   user-select: none;
+  min-height: 72px;
 
   background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
   border: 1px solid #bae6fd;
@@ -193,3 +199,4 @@ button#resetBtn {
     opacity: 1;
   }
 }
+
