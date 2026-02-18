@@ -1,3 +1,5 @@
+// script.js (desktop drag/drop + mobile tap-to-place)
+
 (() => {
   "use strict";
 
@@ -23,18 +25,17 @@
     { id: "membrane", label: "Controls Cell Entry/Exit" }
   ];
 
-  // ---------- State ----------
   const state = {
     dropped: Object.create(null),
     organelles: [],
-    targets: []
+    targets: [],
+    selectedOrganelleId: null,
+    isTouchMode: false
   };
 
-  // ---------- Helpers ----------
   const $ = (id) => document.getElementById(id);
 
   function shuffle(arr) {
-    // Fisher-Yates shuffle (in-place copy)
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -43,9 +44,8 @@
     return a;
   }
 
-  function getOrgNameById(id) {
-    const found = state.organelles.find(o => o.id === id) || organellesBase.find(o => o.id === id);
-    return found ? found.name : "";
+  function getOrgById(id) {
+    return state.organelles.find(o => o.id === id) || organellesBase.find(o => o.id === id) || null;
   }
 
   function clearFeedback() {
@@ -74,7 +74,20 @@
     window.setTimeout(() => (popup.hidden = true), ms);
   }
 
-  // ---------- Render ----------
+  function updateTapHint() {
+    const scoreEl = $("score");
+    if (!scoreEl) return;
+
+    if (!state.isTouchMode) return;
+
+    if (!state.selectedOrganelleId) {
+      scoreEl.textContent = "Tap an organelle, then tap its matching function.";
+    } else {
+      const org = getOrgById(state.selectedOrganelleId);
+      scoreEl.textContent = `Selected: ${org ? org.name : "Organelle"} — now tap a function to place it.`;
+    }
+  }
+
   function renderOrganelles() {
     const organellesEl = $("organelles");
     if (!organellesEl) return;
@@ -84,12 +97,24 @@
     state.organelles.forEach(org => {
       const chip = document.createElement("div");
       chip.className = "chip";
-      chip.draggable = true;
       chip.dataset.id = org.id;
 
+      // Desktop drag
+      chip.draggable = !state.isTouchMode;
+
       chip.addEventListener("dragstart", (e) => {
+        if (state.isTouchMode) return;
         e.dataTransfer.setData("text/plain", org.id);
         e.dataTransfer.effectAllowed = "move";
+      });
+
+      // Mobile tap-to-select (also works on desktop if you tap)
+      chip.addEventListener("click", () => {
+        state.selectedOrganelleId = org.id;
+        document.querySelectorAll(".chip").forEach(el => el.classList.remove("selected"));
+        chip.classList.add("selected");
+        clearFeedback();
+        updateTapHint();
       });
 
       const img = document.createElement("img");
@@ -118,12 +143,15 @@
       row.className = "target";
       row.dataset.id = t.id;
 
+      // Desktop drop
       row.addEventListener("dragover", (e) => {
+        if (state.isTouchMode) return;
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
       });
 
       row.addEventListener("drop", (e) => {
+        if (state.isTouchMode) return;
         e.preventDefault();
         const organelleId = e.dataTransfer.getData("text/plain");
         if (!organelleId) return;
@@ -133,6 +161,25 @@
         renderTargets();
       });
 
+      // Mobile tap-to-place
+      row.addEventListener("click", () => {
+        if (!state.isTouchMode) return;
+        if (!state.selectedOrganelleId) {
+          updateTapHint();
+          return;
+        }
+
+        state.dropped[t.id] = state.selectedOrganelleId;
+
+        // clear selection after placing
+        state.selectedOrganelleId = null;
+        document.querySelectorAll(".chip").forEach(el => el.classList.remove("selected"));
+
+        clearFeedback();
+        renderTargets();
+        updateTapHint();
+      });
+
       const label = document.createElement("div");
       label.textContent = t.label;
 
@@ -140,7 +187,7 @@
       slot.className = "dropSlot";
 
       const placedId = state.dropped[t.id];
-      slot.textContent = placedId ? (getOrgNameById(placedId) || "Drop Here") : "Drop Here";
+      slot.textContent = placedId ? (getOrgById(placedId)?.name || "Drop Here") : "Drop Here";
 
       row.appendChild(label);
       row.appendChild(slot);
@@ -148,11 +195,9 @@
     });
   }
 
-  // ---------- Actions ----------
   function checkAnswers() {
     let correct = 0;
 
-    // Grade against the canonical IDs (order does not matter)
     targetsBase.forEach(t => {
       const placed = state.dropped[t.id];
       const row = document.querySelector(`.target[data-id="${t.id}"]`);
@@ -180,15 +225,23 @@
 
   function startNewRound() {
     state.dropped = Object.create(null);
+    state.selectedOrganelleId = null;
+
     state.organelles = shuffle(organellesBase);
     state.targets = shuffle(targetsBase);
+
     clearFeedback();
     renderOrganelles();
     renderTargets();
+    updateTapHint();
   }
 
-  // ---------- Init ----------
   document.addEventListener("DOMContentLoaded", () => {
+    // Detect touch devices (simple + practical)
+    state.isTouchMode =
+      ("ontouchstart" in window) ||
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+
     const checkBtn = $("checkBtn");
     const resetBtn = $("resetBtn");
 
